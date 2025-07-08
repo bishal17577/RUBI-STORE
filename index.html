@@ -5,6 +5,29 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>affilate</title>
     <style>
+        /* --- General & Animation Keyframes --- */
+        @keyframes product-fade-in {
+            from {
+                opacity: 0;
+                transform: translateY(15px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes gradient-animation {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        @keyframes zoom-fade-in {
+            from { opacity: 0; transform: scale(0.9); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
         body {
             font-family: sans-serif;
             margin: 0;
@@ -22,24 +45,70 @@
             display: flex;
             justify-content: space-between;
             align-items:left;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        
+        .search-container {
+            flex-grow: 1;
+            margin-right: 15px;
         }
 
         .search-bar {
             padding: 10px;
             border: 1px solid #Ff0000;
             border-radius: 100px;
-            width: 90%;
+            width: 100%;
+            box-sizing: border-box; /* Ensures padding doesn't affect width */
         }
 
         .header-icons {
             display: flex;
-            gap: 20px;
+            gap: 15px;
+            align-items: center;
+            flex-shrink: 0; /* Prevents icons from shrinking */
         }
 
         .header-icons a {
             color: #ff0000;
             text-decoration: none;
             cursor: pointer;
+            white-space: nowrap; /* Prevents text wrapping */
+        }
+        
+        /* --- CATEGORY NAVIGATION --- */
+        .category-nav {
+            display: flex;
+            overflow-x: auto;
+            padding: 10px;
+            gap: 8px;
+            background-color: #fdfdfd;
+            border-bottom: 1px solid #f0f0f0;
+            scrollbar-width: none; /* Firefox */
+        }
+        .category-nav::-webkit-scrollbar {
+            display: none; /* Chrome, Safari, Opera */
+        }
+        .category-btn {
+            padding: 8px 16px;
+            border: 1px solid #ddd;
+            border-radius: 20px;
+            background-color: #f8f8f8;
+            color: #333;
+            cursor: pointer;
+            font-size: 0.9em;
+            white-space: nowrap;
+            transition: background-color 0.2s, color 0.2s;
+        }
+        .category-btn:hover {
+            background-color: #e9e9e9;
+        }
+        .category-btn.active {
+            background: linear-gradient(59deg, #00FFFF, #FF0000);
+            color: white;
+            border-color: transparent;
+            font-weight: bold;
         }
 
         .container {
@@ -50,11 +119,13 @@
 
         .product-header {
             background: linear-gradient(59deg, #00FFFF, white, #00FFFF,white,#FF0000);
+            background-size: 300% 300%;
             padding: 15px;
             border-radius: 30px;
-            box-shadow: 0 0 5px rgba(0, 0, 0, 0.05);
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.08);
             margin-bottom: 20px;
             margin-top: 20px;
+            animation: product-fade-in 0.5s ease-out forwards, gradient-animation 15s ease infinite;
         }
 
         .product-header:first-child {
@@ -90,8 +161,13 @@
             justify-content: center;
             align-items: center;
             overflow: hidden;
-            transition: width 0.3s, height 0.3s;
+            transition: transform 0.2s ease-in-out;
             flex-shrink: 0;
+            cursor: zoom-in;
+        }
+        
+        .photo-placeholder:hover {
+            transform: scale(1.05); /* Animation on hover */
         }
 
         .photo-placeholder img {
@@ -100,192 +176,79 @@
             object-fit: cover;
         }
 
-        .photo-placeholder.shrunk {
-            width: 300px;
-            height: 200px;
-        }
-        
-        .offer-list {
-            list-style: none;
-            padding: 0;
-        }
+        .offer-list { list-style: none; padding: 0; }
+        .offer-item { background-color: white; padding: 10px 15px; margin-bottom: 8px; border-radius: 5px; box-shadow: 0 0 3px rgba(0, 0, 0, 0.05); display: flex; justify-content: space-between; align-items: center; }
+        .platform-info { display: flex; align-items: center; gap: 10px; }
+        .platform-name { font-weight: bold; }
+        .price { font-weight: bold; color: green; padding: 5px 15px; border: 1px solid #ddd; border-radius: 100px; }
+        .buy-button { padding: 8px 12px; background-color: #007bff; color: white; border: none; border-radius: 50px; cursor: pointer; text-decoration: none; font-size: 0.9em; }
+        .buy-button:hover { background-color: #0056b3; }
+        .rating { margin-top: 10px; color: gold; font-size: 1.20em; }
 
-        .offer-item {
-            background-color: white;
-            padding: 10px 15px;
-            margin-bottom: 8px;
-            border-radius: 5px;
-            box-shadow: 0 0 3px rgba(0, 0, 0, 0.05);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .platform-info {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .platform-name {
-            font-weight: bold;
-        }
-
-        .price {
-            font-weight: bold;
-            color: green;
-            padding: 5px 15px;
-            border: 1px solid #ddd;
-            border-radius: 100px;
-        }
-
-        .buy-button {
-            padding: 8px 12px;
-            background-color: #007bff;
-            color: white;
-            border: none;
-            border-radius: 50px;
-            cursor: pointer;
-            text-decoration: none;
-            font-size: 0.9em;
-        }
-
-        .buy-button:hover {
-            background-color: #0056b3;
-        }
-
-        .rating {
-            margin-top: 10px;
-            color: gold;
-            font-size: 1.20em;
-        }
-
-        footer {
-            background-color: #f8f8f8;
-            padding: 5px;
-            border-top: 1px solid #eee;
-            display: flex;
-            justify-content: space-around;
-            align-items: center;
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            width: 100%;
-            box-sizing: border-box;
-        }
-
-        .footer-icon {
-            font-size: 1.3em;
-            color: #555;
-            text-decoration: none;
-        }
-
-        .footer-link {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            color: #555;
-            text-decoration: none;
-        }
-
-        .footer-link:hover {
-            color: #007bff;
-        }
+        footer { background-color: #f8f8f8; padding: 5px; border-top: 1px solid #eee; display: flex; justify-content: space-around; align-items: center; position: fixed; bottom: 0; left: 0; width: 100%; box-sizing: border-box; }
+        .footer-icon { font-size: 1.3em; color: #555; text-decoration: none; }
+        .footer-link { display: flex; flex-direction: column; align-items: center; color: #555; text-decoration: none; }
+        .footer-link:hover { color: #007bff; }
 
         /* --- PROFILE PAGE CSS --- */
-        #profileContainer {
-            padding: 20px;
-            max-width: 600px;
-            margin: 0 auto;
-        }
-        .profile-pic-container {
-            display: flex; flex-direction: column; align-items: center; margin-bottom: 25px;
-        }
-        #profilePicPreview {
-            width: 120px; height: 120px; border-radius: 50%; object-fit: cover; background-color: #eee; border: 3px solid #ddd; margin-bottom: 10px;
-        }
+        #profileContainer { padding: 20px; max-width: 600px; margin: 0 auto; display: none; }
+        .profile-pic-container { display: flex; flex-direction: column; align-items: center; margin-bottom: 25px; }
+        #profilePicPreview { width: 120px; height: 120px; border-radius: 50%; object-fit: cover; background-color: #eee; border: 3px solid #ddd; margin-bottom: 10px; }
         #profilePicInput { display: none; }
-        .upload-btn {
-            padding: 8px 15px; background-color: #555; color: white; border-radius: 20px; cursor: pointer; font-size: 0.9em;
-        }
+        .upload-btn { padding: 8px 15px; background-color: #555; color: white; border-radius: 20px; cursor: pointer; font-size: 0.9em; }
         .upload-btn:hover { background-color: #333; }
         .form-group { margin-bottom: 15px; }
-        .form-group label {
-            display: block; margin-bottom: 5px; color: #333; font-weight: bold;
-        }
-        .form-group input, .form-group textarea {
-            width: 100%; padding: 12px; border: 1px solid #ccc; border-radius: 8px; box-sizing: border-box;
-        }
-        .save-profile-btn {
-            width: 100%; padding: 12px; background-color: #007bff; color: white; border: none; border-radius: 25px; cursor: pointer; font-size: 1em; font-weight: bold; margin-top: 15px;
-        }
+        .form-group label { display: block; margin-bottom: 5px; color: #333; font-weight: bold; }
+        .form-group input, .form-group textarea { width: 100%; padding: 12px; border: 1px solid #ccc; border-radius: 8px; box-sizing: border-box; }
+        .save-profile-btn { width: 100%; padding: 12px; background-color: #007bff; color: white; border: none; border-radius: 25px; cursor: pointer; font-size: 1em; font-weight: bold; margin-top: 15px; }
         .save-profile-btn:hover { background-color: #0056b3; }
 
         /* --- SETTINGS MODAL CSS --- */
-        .modal {
-            display: none; 
+        .modal { display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; overflow: auto; background-color: rgba(0,0,0,0.5); }
+        .modal-content { background-color: #fefefe; margin: 30% auto; padding: 20px; border: 1px solid #888; width: 85%; max-width: 400px; border-radius: 10px; box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2); }
+        .close-btn { color: #aaa; float: right; font-size: 28px; font-weight: bold; }
+        .close-btn:hover, .close-btn:focus { color: black; text-decoration: none; cursor: pointer; }
+        #brightnessSlider { width: 100%; height: 15px; border-radius: 5px; background: #d3d3d3; outline: none; opacity: 0.7; -webkit-transition: .2s; transition: opacity .2s; margin-top: 15px; }
+        #brightnessSlider:hover { opacity: 1; }
+        #brightnessSlider::-webkit-slider-thumb { -webkit-appearance: none; appearance: none; width: 25px; height: 25px; border-radius: 50%; background: #007bff; cursor: pointer; }
+        #brightnessSlider::-moz-range-thumb { width: 25px; height: 25px; border-radius: 50%; background: #007bff; cursor: pointer; }
+
+        /* --- Image Zoom Modal (Lightbox) CSS --- */
+        .image-zoom-modal {
+            display: none; /* Hidden by default */
             position: fixed;
-            z-index: 1000;
+            z-index: 2000; /* On top of everything */
             left: 0;
             top: 0;
             width: 100%;
             height: 100%;
-            overflow: auto;
-            background-color: rgba(0,0,0,0.5);
-        }
-        .modal-content {
-            background-color: #fefefe;
-            margin: 30% auto;
-            padding: 20px;
-            border: 1px solid #888;
-            width: 85%;
-            max-width: 400px;
-            border-radius: 10px;
-            box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
-        }
-        .close-btn {
-            color: #aaa;
-            float: right;
-            font-size: 28px;
-            font-weight: bold;
-        }
-        .close-btn:hover, .close-btn:focus {
-            color: black;
-            text-decoration: none;
-            cursor: pointer;
-        }
-        #brightnessSlider {
-            
-            width: 100%;
-            height: 15px;
-            border-radius: 5px;   
-            background: #d3d3d3;
-            outline: none;
-            opacity: 0.7;
-            -webkit-transition: .2s;
-            transition: opacity .2s;
-            margin-top: 15px;
-        }
-        #brightnessSlider:hover {
-            opacity: 1;
-        }
-        #brightnessSlider::-webkit-slider-thumb {
-            -webkit-appearance: none;
-            appearance: none;
-            width: 25px;
-            height: 25px;
-            border-radius: 50%; 
-            background: #007bff;
-            cursor: pointer;
-        }
-        #brightnessSlider::-moz-range-thumb {
-            width: 25px;
-            height: 25px;
-            border-radius: 50%;
-            background: #007bff;
-            cursor: pointer;
+            background-color: rgba(0,0,0,0.85);
+            justify-content: center;
+            align-items: center;
+            animation: zoom-fade-in 0.3s ease;
+            cursor: zoom-out;
         }
 
+        .zoom-modal-content {
+            max-width: 90%;
+            max-height: 85%;
+            object-fit: contain;
+            cursor: default;
+        }
+
+        .close-zoom-btn {
+            position: absolute;
+            top: 15px;
+            right: 35px;
+            color: #f1f1f1;
+            font-size: 40px;
+            font-weight: bold;
+            transition: 0.3s;
+            cursor: pointer;
+        }
+        .close-zoom-btn:hover {
+            color: #bbb;
+        }
     </style>
 </head>
 <body>
@@ -300,30 +263,26 @@
         </div>
     </header>
 
+    <nav class="category-nav" id="categoryNav">
+        <button class="category-btn active" data-category="all">All</button>
+        <button class="category-btn" data-category="gadgets">Gadgets</button>
+        <button class="category-btn" data-category="electric">Electric</button>
+        <button class="category-btn" data-category="hardware">Hardware</button>
+        <button class="category-btn" data-category="boys-cloth">Boys</button>
+        <button class="category-btn" data-category="girls-cloth">Girls</button>
+        <button class="category-btn" data-category="food">Food</button>
+    </nav>
+
     <div class="container" id="productsContainer">
-        <!-- Product divs are populated here by JavaScript -->
-        <div class="product-header" data-name="Facebook hacking"><h2 class="product-title-main">Facebook hacking</h2><p class="product-title-secondary"><i>Best hacking gadget <br>up to 400 ID per hour <br>portable &durablity</i></p><div class="photo-gallery"><div class="photo-placeholder" onclick="toggleSize(this)"><img src="https://i.ibb.co/qYFVX63P/IMG-20250403-120323.jpg" alt="IMG-20250403-120323" border="0"></div><div class="photo-placeholder" onclick="toggleSize(this)"><img src="https://i.ibb.co/PsDpxJrJ/IMG-20250403-120404.jpg" alt="IMG-20250403-120404" border="0"></div><div class="photo-placeholder" onclick="toggleSize(this)"><img src="https://i.ibb.co/vp8Yqhj/IMG-20250403-120340.jpg" alt="IMG-20250403-120340" border="0"></div></div><div class="rating">4.6 <span style="color: gold;">★★★★☆</span></div><ul class="offer-list"><li class="offer-item"><div class="platform-info"><span class="platform-name">Hamrosewa</span></div><span class="price">1500</span><a href="hamro.html" class="buy-button" target="_blank">Buy</a></li></ul><details style="text-align: right; margin-top: 10px; font-size: 0.9em; color: #555;"><summary>See more </summary><p>only one product in our store <br> <a href="" style="text-decoration: none;">more information..</a></p></details></div>
-        <div class="product-header" data-name="AIRPOD PRO"><h2 class="product-title-main">AIRPOD PRO</h2><p class="product-title-secondary">Airpod pro ANC..</p><div class="photo-gallery"><div class="photo-placeholder" onclick="toggleSize(this)"><img src="https://i.ibb.co/j93SHNv4/a3312b51f56b983d084d933f1a03eecb-png.jpg" alt="a3312b51f56b983d084d933f1a03eecb-png" border="0"></div><div class="photo-placeholder" onclick="toggleSize(this)"><img src="https://i.ibb.co/j93SHNv4/a3312b51f56b983d084d933f1a03eecb-png.jpg" alt="a3312b51f56b983d084d933f1a03eecb-png" border="0"></div><div class="photo-placeholder" onclick="toggleSize(this)"><img src="https://i.ibb.co/j93SHNv4/a3312b51f56b983d084d933f1a03eecb-png.jpg" alt="a3312b51f56b983d084d933f1a03eecb-png" border="0"></div></div><div class="rating">4.6 <span style="color: gold;">★★★★☆</span></div><ul class="offer-list"><li class="offer-item"><div class="platform-info"><span class="platform-name">Daraz</span></div><span class="price">369</span><a href="https://s.daraz.com.np/s.Ss3S" class="buy-button" target="_blank">Buy</a></li></ul><details style="text-align: right; margin-top: 10px; font-size: 0.9em; color: #555;"><summary>see more.</summary><p> Airpod pro ANC.. <br> <a href="" style="text-decoration: none;">more information..</a></p></details></div>
-        <div class="product-header" data-name="Brushless motor"><h2 class="product-title-main">Brushless motor</h2><p class="product-title-secondary">Drone motor at best price</p><div class="photo-gallery"><div class="photo-placeholder" onclick="toggleSize(this)"><img src="https://i.ibb.co/rKhrFc4w/3a68ff37e6c15496727e81e9b4ef7a39.jpg" alt="brushless motor 1" border="0"></div><div class="photo-placeholder" onclick="toggleSize(this)"><img src="https://i.ibb.co/rKhrFc4w/3a68ff37e6c15496727e81e9b4ef7a39.jpg" alt="brushless motor 2" border="0"></div><div class="photo-placeholder" onclick="toggleSize(this)"><img src="https://i.ibb.co/rKhrFc4w/3a68ff37e6c15496727e81e9b4ef7a39.jpg" alt="brushless motor 3" border="0"></div></div><div class="rating">4.6 <span style="color: gold;">★★★★☆</span></div><ul class="offer-list"><li class="offer-item"><div class="platform-info"><span class="platform-name">Daraz</span></div><span class="price">2250</span><a href="https://s.daraz.com.np/s.SsUA" class="buy-button" target="_blank">Buy</a></li><li class="offer-item"><div class="platform-info"><span class="platform-name">Hamrosewa</span></div><span class="price">2400</span><a href="hamro.html" class="buy-button" target="_blank">Buy</a></li></ul><details style="text-align: right; margin-top: 10px; font-size: 0.9em; color: #555;"><summary>see more </summary><p>1000kw brushless motor <br> <a href="" style="text-decoration: none;">more information..</a></p></details></div>
-        <div class="product-header" data-name="DC Fan"><h2 class="product-title-main">DC Fan</h2><p class="product-title-secondary">High-speed DC fan.</p><div class="photo-gallery"><div class="photo-placeholder" onclick="toggleSize(this)"><img src="https://i.ibb.co/CpnCc5jx/IMG-20250403-125441.jpg" alt="dc fan 1" border="0"></div><div class="photo-placeholder" onclick="toggleSize(this)"><img src="https://i.ibb.co/MDKBG85h/d57f4b32493a44d5f60b1fd88518092c.jpg" alt="dc fan 2" border="0"></div><div class="photo-placeholder" onclick="toggleSize(this)"><img src="https://i.ibb.co/Cs09VfV6/2647fbf678d696d76e00f054086b8311.jpg" alt="dc fan 3" border="0"></div></div><div class="rating">4.6 <span style="color: gold;">★★★★☆</span></div><ul class="offer-list"><li class="offer-item"><div class="platform-info"><span class="platform-name">Daraz</span></div><span class="price">381</span><a href="https://s.daraz.com.np/s.SsRM" class="buy-button" target="_blank">Buy</a></li><li class="offer-item"><div class="platform-info"><span class="platform-name">Hamrosewa</span></div><span class="price">180</span><a href="hamro.html" class="buy-button" target="_blank">Buy</a></li></ul><details style="text-align: right; margin-top: 10px; font-size: 0.9em; color: #555;"><summary>see more</summary><p>best product at pocket friendly price <br> <a href="" style="text-decoration: none;">more information..</a></p></details></div>
-        <div class="product-header" data-name="Lithimum battery "><h2 class="product-title-main">Lithimum battery</h2><p class="product-title-secondary">1200mAh 3.7V 4.44Wh lithimum battery</p><div class="photo-gallery"><div class="photo-placeholder" onclick="toggleSize(this)"><img src="https://i.ibb.co/TqdpRt5x/402563390d26358fe7d2a71bd5bc7861.jpg" alt="battery 1" border="0"></div><div class="photo-placeholder" onclick="toggleSize(this)"><img src="https://i.ibb.co/7xH77N5X/IMG-20250403-125215.jpg" alt="battery 2" border="0"></div><div class="photo-placeholder" onclick="toggleSize(this)"><img src="https://i.ibb.co/GQYDTWhz/IMG-20250403-125243.jpg" alt="battery 3" border="0"></div></div><div class="rating">4.6 <span style="color: gold;">★★★★☆</span></div><ul class="offer-list"><li class="offer-item"><div class="platform-info"><span class="platform-name">Daraz</span></div><span class="price">300</span><a href="https://s.daraz.com.np/s.SsQP" class="buy-button" target="_blank">Buy</a></li><li class="offer-item"><div class="platform-info"><span class="platform-name">Hamroseco</span></div><span class="price">200</span><a href="hamro.html" class="buy-button" target="_blank">Buy</a></li></ul><details style="text-align: right; margin-top: 10px; font-size: 0.9em; color: #555;"><summary>see more</summary><p>best product at pocket friendly price <br> <a href="" style="text-decoration: none;">more information..</a></p></details></div>
+        <!-- Product divs are loaded via JavaScript -->
     </div>
 
-    <!-- PROFILE PAGE CONTAINER - FIX APPLIED HERE -->
-    <div id="profileContainer" style="display: none;">
-        <!-- This form is now correctly structured to send all fields -->
-        <form action="https://api.web3forms.com/submit" method="POST" enctype="multipart/form-data">
-            
-            <!-- These hidden fields are required by Web3Forms -->
-            <input type="hidden" name="access_key" value="1f9d8d2c-a5f8-471e-a027-6f1a0287cafc">
-            <input type="hidden" name="subject" value="New Profile Submission from Affiliate Site">
-            <input type="hidden" name="redirect" value="https://web3forms.com/success">
-
+    <div id="profileContainer">
+        <form id="profileForm">
             <div class="profile-pic-container">
                 <img id="profilePicPreview" src="https://i.ibb.co/68vjVbX/default-profile-pic.png" alt="Profile Picture Preview">
-                <!-- Each input MUST have a `name` attribute to be sent -->
-                <input type="file" name="profile_picture" id="profilePicInput" accept="image/*">
-                <label for="profilePicInput" class="upload-btn">Upload Photo</label>
+                <input type="file" id="profilePicInput" accept="image/*">
+                <label for="profilePicInput" class="upload-btn">Change Photo</label>
             </div>
             <div class="form-group">
                 <label for="username">Username</label>
@@ -337,12 +296,10 @@
                 <label for="address">Address</label>
                 <textarea id="address" name="address" rows="4"></textarea>
             </div>
-
             <button type="submit" class="save-profile-btn">Save Profile</button>
         </form>
     </div>
 
-    <!-- SETTINGS MODAL HTML -->
     <div id="settingsModal" class="modal">
         <div class="modal-content">
             <span class="close-btn">×</span>
@@ -351,99 +308,207 @@
             <input type="range" min="50" max="150" value="100" id="brightnessSlider">
         </div>
     </div>
+    
+    <div id="imageZoomModal" class="image-zoom-modal">
+        <span class="close-zoom-btn">×</span>
+        <img class="zoom-modal-content" id="zoomedImage">
+    </div>
 
     <footer>
         <a href="#home" class="footer-link"><span class="footer-icon">🏠</span><span>Home</span></a>
-    
-       
+        <a href="#profile" class="footer-link"><span class="footer-icon">👤</span><span>Profile</span></a>
         <a href="https://bishal17577.github.io/chapakhana/" class="footer-link"><span class="footer-icon">🛒</span><span>Store</span></a>
     </footer>
 
     <script>
-        function toggleSize(element) {
-            element.classList.toggle('shrunk');
+        function zoomImage(element) {
+            const imageSrc = element.querySelector('img').src;
+            const imageZoomModal = document.getElementById('imageZoomModal');
+            const zoomedImage = document.getElementById('zoomedImage');
+            
+            imageZoomModal.style.display = 'flex';
+            zoomedImage.src = imageSrc;
         }
 
         document.addEventListener('DOMContentLoaded', function() {
-            // --- Get references to all necessary elements ---
             const productsContainer = document.getElementById('productsContainer');
             const profileContainer = document.getElementById('profileContainer');
             const headerElement = document.querySelector('header');
+            const categoryNav = document.getElementById('categoryNav');
             const searchInput = document.getElementById('searchInput');
-            const profilePicInput = document.getElementById('profilePicInput');
-            const profilePicPreview = document.getElementById('profilePicPreview');
             const settingsModal = document.getElementById('settingsModal');
             const settingsBtn = document.getElementById('settingsBtn');
             const closeBtn = document.querySelector('.close-btn');
             const brightnessSlider = document.getElementById('brightnessSlider');
+            const categoryButtons = document.querySelectorAll('.category-btn');
+            const profileForm = document.getElementById('profileForm');
+            const profilePicInput = document.getElementById('profilePicInput');
+            const profilePicPreview = document.getElementById('profilePicPreview');
+            const imageZoomModal = document.getElementById('imageZoomModal');
+            const closeZoomBtn = document.querySelector('.close-zoom-btn');
+            
+            const usernameInput = document.getElementById('username');
+            const phoneInput = document.getElementById('phone');
+            const addressInput = document.getElementById('address');
 
-            // --- Store all product elements in a master array and clear the container ---
-            const allProductHeaders = Array.from(productsContainer.querySelectorAll('.product-header'));
-            productsContainer.innerHTML = ''; 
+            let currentCategory = 'all';
 
-            // --- Reusable function to display an array of products ---
-            function displayProducts(productsArray) {
-                productsContainer.innerHTML = ''; 
-                productsArray.forEach(product => { productsContainer.appendChild(product); });
-                if (productsArray.length === 0 && searchInput.value !== '') {
-                    productsContainer.innerHTML = '<p style="text-align: center; color: #555;">No products found.</p>';
+            // --- Product Data ---
+             const allProductData = [
+                { name: "Facebook", category: "gadgets", secondary: "<i>Best  gadget <br>up to 400 ID per hour <br>portable &durablity</i>", images: ["https://i.ibb.co/qYFVX63P/IMG-20250403-120323.jpg", "https://i.ibb.co/PsDpxJrJ/IMG-20250403-120404.jpg", "https://i.ibb.co/vp8Yqhj/IMG-20250403-120340.jpg"], rating: "4.6", offers: [{ platform: "Rubi Gajuri ", price: "1500" }], details: "only one product in our store <br> <a href='' style='text-decoration: none;'>more information..</a>" },
+                { name: "AIRPOD PRO", category: "gadgets", secondary: "Airpod pro ANC..", images: ["https://i.ibb.co/j93SHNv4/a3312b51f56b983d084d933f1a03eecb-png.jpg"], rating: "4.6", offers: [{ platform: "Rubi Gajuri", price: "500" }], details: "Airpod pro ANC.. <br> <a href='' style='text-decoration: none;'>more information..</a>" },
+                { name: "Brushless motor", category: "hardware", secondary: "Drone motor at best price", images: ["https://i.ibb.co/rKhrFc4w/3a68ff37e6c15496727e81e9b4ef7a39.jpg"], rating: "4.6", offers: [{ platform: "Rubi Gajuri", price: "2250" }, { platform: "Rubi Xtha", price: "2400" }], details: "1000kw brushless motor <br> <a href='' style='text-decoration: none;'>more information..</a>" },
+                { name: "DC Fan", category: "electric", secondary: "High-speed DC fan.", images: ["https://i.ibb.co/CpnCc5jx/IMG-20250403-125441.jpg", "https://i.ibb.co/MDKBG85h/d57f4b32493a44d5f60b1fd88518092c.jpg", "https://i.ibb.co/Cs09VfV6/2647fbf678d696d76e00f054086b8311.jpg"], rating: "4.6", offers: [{ platform: "Rubi Gajuri", price: "381" }, { platform: "Samrat Xtha", price: "300" }], details: "best product at pocket friendly price <br> <a href='' style='text-decoration: none;'>more information..</a>" },
+                { name: "Lithium battery", category: "electric", secondary: "1200mAh 3.7V 4.44Wh lithium battery", images: ["https://i.ibb.co/TqdpRt5x/402563390d26358fe7d2a71bd5bc7861.jpg", "https://i.ibb.co/7xH77N5X/IMG-20250403-125215.jpg", "https://i.ibb.co/GQYDTWhz/IMG-20250403-125243.jpg"], rating: "4.6", offers: [{ platform: "Rubi Gajuri", price: "300" }, { platform: "Samrat Xtha", price: "250" }], details: "best product at pocket friendly price <br> <a href='' style='text-decoration: none;'>more information..</a>" },
+                { name: "Boy's Cotton T-Shirt", category: "boys-cloth", secondary: "Comfortable and stylish graphic tee", images: ["https://i.ibb.co/Kz3X0B8/boys-tshirt-placeholder.jpg"], rating: "4.8", offers: [{ platform: "Rubi Gajuri", price: "899" }], details: "" },
+                { name: "Momo", category: "food", secondary: "buff momo with achar", images: ["https://i.ibb.co/j9HwVDCt/Unknown.jpg"], rating: "4.0", offers: [{ platform: "Sanu vai khaja ghar", price: "110" }], details: "" },
+                { name: "Burger", category: "food", secondary: "burger", images: ["https://i.ibb.co/hxTMw6Fd/Unknown-copy-2.jpg"], rating: "4.0", offers: [{ platform: "Sanu vai khaja ghar", price: "100" }], details: "" },
+                { name: "Chowmin", category: "food", secondary: "chowmin", images: ["https://i.ibb.co/qMmkcdgm/Unknown-copy.jpg"], rating: "4.0", offers: [{ platform: "Sanu vai khaja ghar", price: "75" }], details: "" },
+                { name: "Sukuti khaja set", category: "food", secondary: "sukuti khaja set", images: ["https://i.ibb.co/ynjvJPGY/images.jpg"], rating: "4.0", offers: [{ platform: "Sanu vai khaja ghar", price: "150" }], details: "" },
+             
+                { name: "Girl's Summer Dress", category: "girls-cloth", secondary: "Lightweight floral pattern dress", images: ["https://i.ibb.co/HhJtcsd/girls-dress-placeholder.jpg"], rating: "4.7", offers: [{ platform: "Fashion Hub", price: "1250" }], details: "" },
+            ];
+
+            // --- Core Functions ---
+
+            // MODIFIED FUNCTION: Now includes user profile info and shop name in the WhatsApp message.
+            function createProductElement(product) {
+                const productDiv = document.createElement('div');
+                productDiv.className = 'product-header';
+                productDiv.dataset.name = product.name;
+                productDiv.dataset.category = product.category;
+
+                // Get user's saved profile data from Local Storage
+                const savedProfileJSON = localStorage.getItem('userProfileData');
+                let profileData = { username: 'Not Provided', phone: 'Not Provided' };
+                if (savedProfileJSON) {
+                    profileData = JSON.parse(savedProfileJSON);
                 }
-            }
+                const customerName = profileData.username || 'Not Provided';
+                const customerPhone = profileData.phone || 'Not Provided';
 
-            // --- Simple Page Routing (Home vs Profile) ---
-            function handleRouting() {
-                const hash = window.location.hash || '#home';
-                if (hash === '#profile') {
-                    productsContainer.style.display = 'none';
-                    headerElement.style.display = 'none';
-                    profileContainer.style.display = 'block';
-                } else {
-                    profileContainer.style.display = 'none';
-                    productsContainer.style.display = 'block';
-                    headerElement.style.display = 'flex';
-                }
+                const offersHTML = product.offers.map(offer => {
+                    const shopName = offer.platform;
+                    const productName = product.name;
+                    const productPrice = offer.price;
+                    const productImage = product.images[0]; 
+
+                    // Create a more detailed pre-filled message for WhatsApp
+                    const message = `Hello, I'd like to order this product.
+---
+*PRODUCT DETAILS:*
+- *Product:* ${productName}
+- *From Shop:* ${shopName}
+- *Price:* Rs. ${productPrice}
+- *Image:* ${productImage}
+---
+*MY DETAILS:*
+- *Name:* ${customerName}
+- *Phone:* ${customerPhone}
+---`;
+                    
+                    const encodedMessage = encodeURIComponent(message);
+                    const whatsappUrl = `https://wa.me/9761614027?text=${encodedMessage}`;
+
+                    return `
+                        <li class="offer-item">
+                            <div class="platform-info"><span class="platform-name">${shopName}</span></div>
+                            <span class="price">${productPrice}</span>
+                            <a href="${whatsappUrl}" class="buy-button" target="_blank">Buy</a>
+                        </li>`;
+                }).join('');
+
+                const imagesHTML = product.images.map(img => `<div class="photo-placeholder" onclick="zoomImage(this)"><img src="${img}" alt="${product.name} image"></div>`).join('');
+                const detailsHTML = product.details ? `<details style="text-align: right; margin-top: 10px; font-size: 0.9em; color: #555;"><summary>See more</summary><p>${product.details}</p></details>` : '';
+                
+                productDiv.innerHTML = `<h2 class="product-title-main">${product.name}</h2><p class="product-title-secondary">${product.secondary}</p><div class="photo-gallery">${imagesHTML}</div><div class="rating">${product.rating} <span style="color: gold;">★★★★☆</span></div><ul class="offer-list">${offersHTML}</ul>${detailsHTML}`;
+                return productDiv;
             }
+            
+            // --- Unchanged Functions ---
+            let allProductHeaders = []; // Will be populated after DOM is ready
+            let shuffledProducts = [];
+
+            function displayProducts(productsArray) { productsContainer.innerHTML = ''; if (productsArray.length === 0) { productsContainer.innerHTML = `<p style="text-align: center; color: #555; margin-top: 20px;">No products found.</p>`; } else { productsArray.forEach(product => { productsContainer.appendChild(product); }); } }
+            function shuffleArray(array) { for (let i = array.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [array[i], array[j]] = [array[j], array[i]]; } }
+            function handleRouting() { 
+                const hash = window.location.hash || '#home'; 
+                if (hash === '#profile') { 
+                    productsContainer.style.display = 'none'; 
+                    categoryNav.style.display = 'none'; 
+                    headerElement.style.display = 'none'; 
+                    profileContainer.style.display = 'block'; 
+                } else { 
+                    profileContainer.style.display = 'none'; 
+                    productsContainer.style.display = 'block'; 
+                    categoryNav.style.display = 'flex'; 
+                    headerElement.style.display = 'flex'; 
+                    // Re-render products in case profile info changed
+                    allProductHeaders = allProductData.map(createProductElement);
+                    shuffledProducts = [...allProductHeaders];
+                    shuffleArray(shuffledProducts);
+                    filterAndDisplay();
+                } 
+            }
+            function filterAndDisplay() { const searchTerm = searchInput.value.toLowerCase().trim(); let productsToShow = currentCategory === 'all' ? shuffledProducts : shuffledProducts.filter(p => p.dataset.category === currentCategory); if (searchTerm !== '') { productsToShow = productsToShow.filter(header => header.dataset.name.toLowerCase().includes(searchTerm)); productsToShow.sort((a, b) => a.dataset.name.localeCompare(b.dataset.name)); } displayProducts(productsToShow); }
+
+            // --- Event Listeners ---
             window.addEventListener('hashchange', handleRouting);
-            handleRouting(); // Run on initial load
-
-            // --- Product Shuffling and Initial Display ---
-            function shuffleArray(array) {
-                for (let i = array.length - 1; i > 0; i--) {
-                    const j = Math.floor(Math.random() * (i + 1));
-                    [array[i], array[j]] = [array[j], array[i]];
-                }
-            }
-            let shuffledProducts = [...allProductHeaders];
-            shuffleArray(shuffledProducts);
-            displayProducts(shuffledProducts);
-
-            // --- Product Search Logic ---
-            searchInput.addEventListener('input', function() {
-                const searchTerm = searchInput.value.toLowerCase().trim();
-                if (searchTerm === '') {
-                    displayProducts(shuffledProducts); // Show shuffled list if search is empty
-                    return;
-                }
-                const matchingProducts = allProductHeaders.filter(header => {
-                    return header.dataset.name.toLowerCase().includes(searchTerm);
-                });
-                matchingProducts.sort((a, b) => a.dataset.name.localeCompare(b.dataset.name)); // Sort results
-                displayProducts(matchingProducts);
-            });
-
-
-            // --- Settings Modal Logic ---
+            categoryButtons.forEach(button => { button.addEventListener('click', () => { categoryButtons.forEach(btn => btn.classList.remove('active')); button.classList.add('active'); currentCategory = button.dataset.category; searchInput.value = ''; filterAndDisplay(); }); });
+            searchInput.addEventListener('input', filterAndDisplay);
             settingsBtn.onclick = () => { settingsModal.style.display = "block"; }
             closeBtn.onclick = () => { settingsModal.style.display = "none"; }
-            window.onclick = (event) => {
-                if (event.target == settingsModal) {
-                    settingsModal.style.display = "none";
+            window.onclick = (event) => { if (event.target == settingsModal) { settingsModal.style.display = "none"; } }
+            brightnessSlider.addEventListener('input', function() { document.body.style.filter = `brightness(${this.value}%)`; });
+            closeZoomBtn.onclick = function() { imageZoomModal.style.display = "none"; }
+            imageZoomModal.onclick = function(event) { if (event.target === imageZoomModal) { imageZoomModal.style.display = "none"; } }
+            
+            // --- PROFILE PAGE LOGIC (SAVE & LOAD LOCALLY) ---
+            function loadProfileInfo() {
+                const savedPic = localStorage.getItem('profilePicData');
+                if (savedPic) {
+                    profilePicPreview.src = savedPic;
+                }
+                const savedProfile = localStorage.getItem('userProfileData');
+                if (savedProfile) {
+                    const profileData = JSON.parse(savedProfile);
+                    usernameInput.value = profileData.username || '';
+                    phoneInput.value = profileData.phone || '';
+                    addressInput.value = profileData.address || '';
                 }
             }
-            brightnessSlider.addEventListener('input', function() {
-                document.body.style.filter = `brightness(${this.value}%)`;
+
+            profilePicInput.addEventListener('change', function() {
+                const file = this.files[0];
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        const imageDataUrl = e.target.result;
+                        profilePicPreview.src = imageDataUrl;
+                        localStorage.setItem('profilePicData', imageDataUrl);
+                    }
+                    reader.readAsDataURL(file);
+                }
             });
 
+            profileForm.addEventListener('submit', function(e) {
+                e.preventDefault(); 
+                
+                const profileData = {
+                    username: usernameInput.value,
+                    phone: phoneInput.value,
+                    address: addressInput.value
+                };
+
+                localStorage.setItem('userProfileData', JSON.stringify(profileData));
+                
+                alert('Profile saved successfully to your device!');
+                window.location.hash = '#home'; // This will trigger the hashchange listener
+            });
+
+            // --- INITIAL LOAD ---
+            loadProfileInfo();
+            handleRouting();
         });
     </script>
 
